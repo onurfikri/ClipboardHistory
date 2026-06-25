@@ -82,14 +82,34 @@ git push origin "v$VERSION"
 
 # GitHub Release
 echo "🚀 GitHub Release oluşturuluyor..."
-gh release create "v$VERSION" "$DMG" \
-    --title "v$VERSION" \
-    --notes "## v$VERSION
+
+NOTES="## ⬇️ macOS İndir
+
+[![Download](https://img.shields.io/badge/macOS-İndir%20v${VERSION}-blue?style=for-the-badge&logo=apple)](https://github.com/onurfikri/ClipboardHistory/releases/download/v${VERSION}/ClipboardHistory-${VERSION}.dmg)
+
+| | |
+|---|---|
+| **Sürüm** | v${VERSION} |
+| **Platform** | macOS 13 Ventura ve üzeri |
+| **Mimari** | Apple Silicon + Intel (Universal) |
+| **Dosya** | \`ClipboardHistory-${VERSION}.dmg\` |
+
+### Kurulum
+1. Yukarıdaki butona tıklayarak DMG dosyasını indirin
+2. DMG'yi açın, \`ClipboardHistory.pkg\` dosyasına çift tıklayın
+3. Kurulum sihirbazını tamamlayın
+4. Menu bar'da 📋 ikonunu göreceksiniz
+
+> İlk açılışta Gatekeeper uyarısı çıkarsa: **System Settings → Privacy & Security → Open Anyway**
+
+---
 
 ### Değişiklikler
-- Güncelleme notlarını buraya yaz
+- Güncelleme notlarını buraya yaz"
 
-**Kurulum:** DMG içindeki .pkg dosyasını çalıştırın."
+gh release create "v$VERSION" "$DMG" \
+    --title "v$VERSION" \
+    --notes "$NOTES"
 
 echo ""
 echo "✅ Bitti! Release: https://github.com/onurfikri/ClipboardHistory/releases/tag/v$VERSION"
