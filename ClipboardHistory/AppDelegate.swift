@@ -18,10 +18,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupClipboardMonitor()
         registerGlobalHotkey()
 
-        // Başlangıçtan 5sn sonra güncelleme kontrol et
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.updateChecker.checkForUpdates()
-        }
     }
 
     // MARK: - Menu Bar
@@ -31,7 +27,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if let button = statusItem?.button {
             button.image = NSImage(systemSymbolName: "clipboard.fill", accessibilityDescription: "Pano Geçmişi")
-            button.action = #selector(togglePopover(_:))
+            button.action = #selector(handleStatusClick(_:))
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
             button.target = self
         }
 
@@ -73,6 +70,46 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         InstallEventHandler(GetApplicationEventTarget(), hotKeyHandler, 1, &eventSpec, selfPtr, &eventHandlerRef)
         RegisterEventHotKey(UInt32(kVK_ANSI_V), UInt32(cmdKey | shiftKey), hotKeyID,
                             GetApplicationEventTarget(), 0, &hotKeyRef)
+    }
+
+    // MARK: - Status Item Click
+
+    @objc func handleStatusClick(_ sender: NSStatusBarButton) {
+        guard let event = NSApp.currentEvent else { return }
+        if event.type == .rightMouseUp {
+            showStatusMenu(sender)
+        } else {
+            togglePopover(sender)
+        }
+    }
+
+    private func showStatusMenu(_ button: NSStatusBarButton) {
+        let menu = NSMenu()
+
+        let checkTitle = updateChecker.isChecking ? "Kontrol ediliyor..." : "Güncelleme Kontrol Et"
+        let checkItem = NSMenuItem(title: checkTitle, action: #selector(checkForUpdates), keyEquivalent: "")
+        checkItem.target = self
+        checkItem.isEnabled = !updateChecker.isChecking
+        menu.addItem(checkItem)
+
+        menu.addItem(.separator())
+
+        let versionItem = NSMenuItem(title: "ClipboardHistory v\(updateChecker.currentVersion)", action: nil, keyEquivalent: "")
+        versionItem.isEnabled = false
+        menu.addItem(versionItem)
+
+        menu.addItem(.separator())
+
+        let quitItem = NSMenuItem(title: "Çıkış", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(quitItem)
+
+        menu.popUp(positioning: nil,
+                   at: NSPoint(x: 0, y: button.bounds.height + 4),
+                   in: button)
+    }
+
+    @objc private func checkForUpdates() {
+        updateChecker.checkForUpdates(showAlertIfUpToDate: true)
     }
 
     // MARK: - Popover
