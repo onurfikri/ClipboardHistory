@@ -1,0 +1,26 @@
+name: ClipboardHistory
+options:
+  bundleIdPrefix: com.clipboardhistory
+  deploymentTarget:
+    macOS: "13.0"
+  defaultConfig: Debug
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    PRODUCT_BUNDLE_IDENTIFIER: com.clipboardhistory.app
+
+targets:
+  ClipboardHistory:
+    type: application
+    platform: macOS
+    sources:
+      - ClipboardHistory
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.clipboardhistory.app
+        INFOPLIST_FILE: ClipboardHistory/Info.plist
+        CODE_SIGN_ENTITLEMENTS: ClipboardHistory/ClipboardHistory.entitlements
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: NO
