@@ -10,7 +10,7 @@ fi
 
 SDK=$(xcrun --sdk macosx --show-sdk-path)
 APP="ClipboardHistory.app"
-DMG="ClipboardHistory-$VERSION.dmg"
+DMG="ClipboardHistory.dmg"
 
 echo "🔨 v$VERSION build ediliyor..."
 
@@ -109,7 +109,8 @@ NOTES="## ⬇️ macOS İndir
 
 gh release create "v$VERSION" "$DMG" \
     --title "v$VERSION" \
-    --notes "$NOTES"
+    --notes "$NOTES" \
+    --latest
 
 echo ""
 echo "✅ Bitti! Release: https://github.com/onurfikri/ClipboardHistory/releases/tag/v$VERSION"
